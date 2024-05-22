@@ -1,9 +1,9 @@
-package reverse
+package reverse_test
 
 import (
 	"testing"
 
-	"github.com/kernignan-book/reverse"
+	"github.com/vivekup3424/kernignan-book/reverse"
 )
 
 type Word struct {
@@ -20,7 +20,7 @@ func TestString(t *testing.T) {
 		result := reverse.String(got)
 		if result != c.want {
 			t.Errorf("Assertion Error: res(%s) != want(%s)",
-				&result, c.want)
+				result, c.want)
 		}
 
 	}
