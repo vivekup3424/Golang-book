@@ -100,5 +100,5 @@ func deleteHandler(c *fiber.Ctx, db *sql.DB) error {
 	taskDelete := c.Query("name")
 	db.Exec("DELETE from tasks WHERE item=$1", taskDelete)
 	c.SendString("deleted")
-	c.Redirect("/")
+	return c.Redirect("/")
 }
