@@ -23,6 +23,6 @@ func main() {
 	c := [2]int{1, 3}
 	fmt.Println(a == b, b == c, a == c)
 	d := [...]int{1, 3, 4}
-	fmt.Println(c == d)
+
 	//enums
 }
