@@ -1,9 +1,8 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
-
-	"github.com/gin-gonic/gin"
 )
 
 type todo struct {
@@ -22,11 +21,13 @@ var todos = []todo{
 	{ID: "7", Item: "Call a friend", Completed: false},
 }
 
-func getTodos(context *gin.Context) {
-	context.IndentedJSON(http.StatusOK, todos)
-}
 func main() {
-	router := gin.Default()
-	router.GET("/", getTodos)
-	router.Run(":8080")
+	router := http.NewServeMux()
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		val, _ := json.Marshal(todos)
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write(val)
+	})
+	http.ListenAndServe("localhost:8081", router)
 }
