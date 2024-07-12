@@ -1,4 +1,4 @@
-# func Notify ¶
+# func Notify
 
 ```go
 func Notify(c chan<- os.Signal, sig ...os.Signal)
