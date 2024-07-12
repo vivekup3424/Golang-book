@@ -22,8 +22,9 @@ func main() {
 		MaxHeaderBytes: 1 << 20,
 	}
 	//NOTE: registers a handler
-	router.HandleFunc("/hello", handlers.NewHello(logger).ServeHTTP)
-	router.HandleFunc("/goodbye", handlers.NewGoodbye(logger).ServeHTTP)
+	router.Handle("/hello", handlers.NewHello(logger))
+	router.Handle("/goodbye", handlers.NewGoodbye(logger))
+	router.Handle("/products", handlers.NewProducts(logger))
 	go func() {
 		err := server.ListenAndServe()
 		if err != nil {
@@ -36,7 +37,6 @@ func main() {
 	// if we're not ready to receive when the signal is sent.
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, os.Interrupt)
-	signal.Notify(sigChan, os.Kill)
 	s := <-sigChan
 	logger.Println("Received terminate, graceful shutdown", s)
 	d := time.Now().Add(30 * time.Second)

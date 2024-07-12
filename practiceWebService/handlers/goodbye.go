@@ -20,7 +20,7 @@ func (g *Goodbye) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	if err != nil {
 		g.l.Println(err)
-		gttp.Error(w, "internal server error", http.StatusInternalServerError)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
 	}
 	g.l.Println(r.Header)
 	g.l.Printf("Served %d bytes\n", n)
