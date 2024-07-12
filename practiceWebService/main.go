@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"time"
 	"web-service/handlers"
 )
@@ -22,7 +24,24 @@ func main() {
 	//NOTE: registers a handler
 	router.HandleFunc("/hello", handlers.NewHello(logger).ServeHTTP)
 	router.HandleFunc("/goodbye", handlers.NewGoodbye(logger).ServeHTTP)
-	err := server.ListenAndServe()
+	go func() {
+		err := server.ListenAndServe()
+		if err != nil {
+			logger.Fatal(err)
+		}
+	}()
+	//NOTE: code for managing the shutdown of the server
+	// Set up channel on which to send signal notifications.
+	// We must use a buffered channel or risk missing the signal
+	// if we're not ready to receive when the signal is sent.
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, os.Interrupt)
+	signal.Notify(sigChan, os.Kill)
+	s := <-sigChan
+	logger.Println("Received terminate, graceful shutdown", s)
+	d := time.Now().Add(30 * time.Second)
+	timeoutContext, _ := context.WithDeadline(context.Background(), d)
+	err := server.Shutdown(timeoutContext)
 	if err != nil {
 		logger.Fatal(err)
 	}
