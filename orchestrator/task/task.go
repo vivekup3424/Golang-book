@@ -38,8 +38,8 @@ type Task struct {
 	ExposedPorts  nat.PortSet       `json:"exposedPorts"`
 	PortBindings  map[string]string `json:"portBindings"`
 	RestartPolicy string            `json:"restartPolicy"`
-	startTime     time.Time         `json:"startTime"`
-	endTime       time.Time         `json:"endTime"`
+	StartTime     time.Time         `json:"startTime"`
+	EndTime       time.Time         `json:"endTime"`
 }
 
 //The TaskEvent struct, which represent an event that moves a Task
