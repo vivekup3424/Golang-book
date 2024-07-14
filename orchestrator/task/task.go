@@ -1,6 +1,8 @@
 package task
 
 import (
+	"time"
+
 	"github.com/docker/go-connections/nat"
 	"github.com/google/uuid"
 )
@@ -27,16 +29,25 @@ const (
 // https://tools.ietf.org/html/rfc4122
 
 type Task struct {
-	ID            uuid.UUID          `json:"id"`
-	Name          string             `json:"name"`
-	State         State              `json:"state"`
-	Image         string             `json:"image"`
-	Memory        int                `json:"memory"`
-	Disk          int                `json:"disk"`
-	ExposedPorts  nat.PortSet        `json:"exposedPorts"`
-	PortBindings  map[strings]string `json:"portBindings"`
-	RestartPolicy string             `json:"restartPolicy"`
+	ID            uuid.UUID         `json:"id"`
+	Name          string            `json:"name"`
+	State         State             `json:"state"`
+	Image         string            `json:"image"`
+	Memory        int               `json:"memory"`
+	Disk          int               `json:"disk"`
+	ExposedPorts  nat.PortSet       `json:"exposedPorts"`
+	PortBindings  map[string]string `json:"portBindings"`
+	RestartPolicy string            `json:"restartPolicy"`
+	startTime     time.Time         `json:"startTime"`
+	endTime       time.Time         `json:"endTime"`
 }
 
-//we’re going to limit our orchestrator to dealing with Docker
-//containers
+//The TaskEvent struct, which represent an event that moves a Task
+//from one state to another.
+
+type TaskEvent struct {
+	ID        uuid.UUID `json:"id"`
+	State     State     `json:"state"`
+	Timestamp time.Time `json:"timestamp"`
+	Task      Task      `json:"task"`
+}
