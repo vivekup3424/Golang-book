@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strconv"
 )
 
 type Message struct {
@@ -13,20 +14,26 @@ type Message struct {
 	Content       string
 }
 
-func EncodeMessage(msg any) string {
+func EncodeMessage(msg any) (string, error) {
 	content, err := json.Marshal(msg)
 	if err != nil {
 		log.Println("unable to encode message: ", err)
+		return "", err
 	}
-	return fmt.Sprintf("Content-Length: %d\r\n\r\n", len(content)) + string(content)
+	return fmt.Sprintf("Content-Length: %d\r\n\r\n", len(content)) + string(content), nil
 }
 
-func DecodeMessage(msg []byte) error {
-	header, content, found := bytes.Cut(msg, []byte{'\r', '\n', '\r', '\n'})
+func DecodeMessage(msg []byte) (int, error) {
+	header, _, found := bytes.Cut(msg, []byte{'\r', '\n', '\r', '\n'})
 	if !found {
-		return errors.New("Did not find the seperator")
+		return -1, errors.New("did not find the seperator")
 	}
 	//Content-Length = <number>
-	contentLengthBytes := header["Content-Length: "]
-	return nil
+	contentLengthBytes := header[len("Content-Length: "):]
+	contentLength, err := strconv.Atoi(string(contentLengthBytes))
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Content-length = ", contentLength)
+	return contentLength, nil
 }
