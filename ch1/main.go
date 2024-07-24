@@ -11,5 +11,8 @@ func main() {
 	for input.Scan() {
 		counts[input.Text()]++
 	}
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0973cc0 (history all f*cked)
 }
